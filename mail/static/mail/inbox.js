@@ -178,10 +178,12 @@ function display_email(email, mailbox) {
 
   // Only show the Archive/Unarchive button for emails in the 'inbox' and 'archive' mailboxes
   if (mailbox === "inbox" || mailbox === "archive") {
-    const markUnreadButton = document.createElement("button");
-    markUnreadButton.textContent = "Mark as Unread";
-    markUnreadButton.addEventListener("click", () => mark_as_unread(email.id));
-    emailView.appendChild(markUnreadButton);
+    const archiveButton = document.createElement("button");
+    archiveButton.textContent = mailbox === "inbox" ? "Archive" : "Unarchive";
+    archiveButton.addEventListener("click", () =>
+      toggle_archive(email.id, mailbox !== "inbox")
+    );
+    emailView.appendChild(archiveButton);
   }
 }
 
