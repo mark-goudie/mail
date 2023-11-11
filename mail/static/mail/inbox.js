@@ -200,10 +200,10 @@ function display_email(email, mailbox) {
   // Only show the Archive/Unarchive button for emails in the 'inbox' and 'archive' mailboxes
   if (mailbox === "inbox" || mailbox === "archive") {
     const archiveButton = document.createElement("button");
-    archiveButton.textContent = mailbox === "inbox" ? "Archive" : "Unarchive";
-    archiveButton.className = "btn btn-primary"; // Add class for styling
+    archiveButton.textContent = email.archived ? "Unarchive" : "Archive";
+    archiveButton.className = "btn btn-primary";
     archiveButton.addEventListener("click", () =>
-      toggle_archive(email.id, mailbox !== "inbox")
+      toggle_archive(email.id, !email.archived)
     );
     emailView.appendChild(archiveButton);
   }
@@ -236,25 +236,20 @@ function mark_as_unread(email_id) {
 function toggle_archive(email_id, archiveStatus) {
   fetch(`/emails/${email_id}`, {
     method: "PUT",
-    body: JSON.stringify({
-      archived: archiveStatus,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+    body: JSON.stringify({ archived: archiveStatus }),
+    headers: { "Content-Type": "application/json" },
   })
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       // Reload the appropriate mailbox after updating the archive status
-      if (archiveStatus) {
-        load_mailbox("inbox"); // If archiving, reload inbox
-      } else {
-        load_mailbox("archive"); // If unarchiving, reload archive
-      }
+      load_mailbox(archiveStatus ? "inbox" : "archive");
     })
-    .catch((error) => console.error("Error updating archive status:", error));
+    .catch((error) => {
+      console.error("Error updating archive status:", error);
+      alert("An error occurred while updating the archive status.");
+    });
 }
 
 function reply_email(email) {
