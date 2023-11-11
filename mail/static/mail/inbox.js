@@ -91,18 +91,10 @@ function send_email(event) {
       return response.json();
     })
     .then((result) => {
-      if (
-        result.message === "Email sent successfully" ||
-        result.success ||
-        response.ok
-      ) {
-        alert("Email sent successfully!");
-        load_mailbox("sent");
-      } else {
-        const errorMessage = result.error || "An unexpected error occurred.";
-        alert(`Error sending email: ${errorMessage}`);
-      }
-    });
+      console.log("Email sent successfully:", result);
+      load_mailbox("sent");
+    })
+    .catch((error) => console.error("Error sending email:", error));
 }
 
 function validateEmails(emails) {
