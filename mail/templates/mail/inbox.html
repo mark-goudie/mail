@@ -1,0 +1,71 @@
+{% extends "mail/layout.html" %} 
+{% load static %} 
+
+{% block body %}
+<h2 class="mb-3">{{ request.user.email }}</h2>
+
+<div class="btn-group mb-3" role="group" aria-label="Mail controls">
+  <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
+  <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
+  <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
+  <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
+  <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
+</div>
+
+<hr />
+
+<div id="emails-view" class="mb-3">
+{% for email in emails %}
+<div class="row email mb-2 border-bottom hover:bg-light">
+      <div class="col-4">{{ email.sender }}</div>
+      <div class="col-4 text-center">{{ email.subject }}</div>
+      <div class="col-4 text-right">{{ email.date }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div id="compose-view" class="mb-3">
+  <h3>New Email</h3>
+  <form id="compose-form">
+    <div class="form-group">
+      <label for="compose-from">From:</label>
+      <input
+        type="text"
+        id="compose-from"
+        disabled
+        class="form-control"
+        value="{{ request.user.email }}"
+      />
+    </div>
+    <div class="form-group">
+        <label for="compose-recipients">To:</label>
+        <input type="email" id="compose-recipients" class="form-control" required aria-describedby="emailHelp">
+        <small id="emailHelp" class="form-text text-muted">Enter recipient's email address.</small>
+    </div>
+    <div class="form-group">
+      <label for="compose-subject">Subject:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="compose-subject"
+        placeholder="Subject"
+      />
+    </div>
+    <div class="form-group">
+      <label for="compose-body">Body:</label>
+      <textarea
+        class="form-control"
+        id="compose-body"
+        placeholder="Body"
+      ></textarea>
+    </div>
+    <input type="submit" class="btn btn-primary mt-2" />
+  </form>
+</div>
+
+<div id="email-view" style="display: none"></div>
+{% endblock %} 
+
+{% block script %}
+<script src="{% static 'mail/inbox.js' %}"></script>
+{% endblock %}
