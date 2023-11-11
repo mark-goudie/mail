@@ -84,16 +84,24 @@ function send_email(event) {
       "Content-Type": "application/json",
     },
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
     .then((result) => {
       if (result.message === "Email sent successfully") {
         alert("Email sent successfully!");
         load_mailbox("sent");
       } else {
-        const errorMessage =
-          result.error || "An error occurred. Please try again.";
+        const errorMessage = result.error || "An unexpected error occurred.";
         alert(`Error sending email: ${errorMessage}`);
       }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      alert("An error occurred. Please try again.");
     });
 }
 
@@ -173,6 +181,7 @@ function display_email(email, mailbox) {
 
   const replyButton = document.createElement("button");
   replyButton.textContent = "Reply";
+  replyButton.className = "btn btn-primary"; // Add class for styling
   replyButton.addEventListener("click", () => reply_email(email));
   emailView.appendChild(replyButton);
 

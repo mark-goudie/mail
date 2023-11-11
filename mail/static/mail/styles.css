@@ -80,10 +80,9 @@ input[type="submit"] {
   cursor: pointer;
 }
 
-input[type="body"] {
-  min-height: 150px;
-  width: 100%;
-  cursor: pointer;
+#compose-view textarea,
+#compose-body textarea {
+  min-height: 200px;
 }
 
 /* Email List */
