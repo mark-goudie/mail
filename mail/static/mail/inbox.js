@@ -91,17 +91,17 @@ function send_email(event) {
       return response.json();
     })
     .then((result) => {
-      if (result.message === "Email sent successfully") {
+      if (
+        result.message === "Email sent successfully" ||
+        result.success ||
+        response.ok
+      ) {
         alert("Email sent successfully!");
         load_mailbox("sent");
       } else {
         const errorMessage = result.error || "An unexpected error occurred.";
         alert(`Error sending email: ${errorMessage}`);
       }
-    })
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      alert("An error occurred. Please try again.");
     });
 }
 
@@ -201,7 +201,7 @@ function display_email(email, mailbox) {
   if (mailbox === "inbox" || mailbox === "archive") {
     const archiveButton = document.createElement("button");
     archiveButton.textContent = email.archived ? "Unarchive" : "Archive";
-    archiveButton.className = "btn btn-primary";
+    archiveButton.className = "btn btn-success";
     archiveButton.addEventListener("click", () =>
       toggle_archive(email.id, !email.archived)
     );

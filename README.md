@@ -16,6 +16,11 @@ https://cs50.harvard.edu/web/2020/projects/3/mail/
 
 ## Admin settings to test the project
 
+Superuser:
+admin
+admin@foo.com
+password0
+
 Primary user:
 email: johndoe@foo.com
 password: password1
