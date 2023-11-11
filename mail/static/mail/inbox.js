@@ -114,21 +114,33 @@ function display_emails(emails, mailbox) {
   const emailContainer = document.querySelector("#emails-view");
 
   emails.forEach((email) => {
-    const emailDiv = document.createElement("div");
-    emailDiv.className = "email";
-    emailDiv.style.border = "1px solid black";
-    emailDiv.style.padding = "10px";
-    emailDiv.style.marginBottom = "10px";
-    emailDiv.style.background = email.read ? "gray" : "white";
+    // Create a row for each email
+    const emailRow = document.createElement("div");
+    emailRow.className = "row email mb-2 border-bottom";
 
-    emailDiv.innerHTML = `
-          <b>From:</b> ${email.sender} <br>
-          <b>Subject:</b> ${email.subject} <br>
-          <b>Timestamp:</b> ${email.timestamp}`;
+    // Create columns for sender, subject, and date
+    const senderCol = document.createElement("div");
+    senderCol.className = "col-md-4 col-sm-12";
+    senderCol.textContent = email.sender;
 
-    emailDiv.addEventListener("click", () => load_email(email.id, mailbox));
+    const subjectCol = document.createElement("div");
+    subjectCol.className = "col-md-4 col-sm-12 text-center";
+    subjectCol.textContent = email.subject;
 
-    emailContainer.appendChild(emailDiv);
+    const dateCol = document.createElement("div");
+    dateCol.className = "col-md-4 col-sm-12 text-right";
+    dateCol.textContent = email.timestamp;
+
+    // Append columns to the row
+    emailRow.appendChild(senderCol);
+    emailRow.appendChild(subjectCol);
+    emailRow.appendChild(dateCol);
+
+    // Add event listener for row click
+    emailRow.addEventListener("click", () => load_email(email.id, mailbox));
+
+    // Append the row to the container
+    emailContainer.appendChild(emailRow);
   });
 }
 

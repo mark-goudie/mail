@@ -14,14 +14,8 @@
 
 <hr />
 
-<div id="emails-view" class="mb-3">
-{% for email in emails %}
-<div class="row email mb-2 border-bottom hover:bg-light">
-      <div class="col-4">{{ email.sender }}</div>
-      <div class="col-4 text-center">{{ email.subject }}</div>
-      <div class="col-4 text-right">{{ email.date }}</div>
-  </div>
-  {% endfor %}
+<div id="emails-view" class="container mb-3">
+
 </div>
 
 <div id="compose-view" class="mb-3">
