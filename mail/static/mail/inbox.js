@@ -126,13 +126,13 @@ function display_emails(emails, mailbox) {
           <b>Subject:</b> ${email.subject} <br>
           <b>Timestamp:</b> ${email.timestamp}`;
 
-    emailDiv.addEventListener("click", () => load_email(email.id));
+    emailDiv.addEventListener("click", () => load_email(email.id, mailbox));
 
     emailContainer.appendChild(emailDiv);
   });
 }
 
-function load_email(email_id) {
+function load_email(email_id, mailbox) {
   // Hide other views
   document.querySelector("#emails-view").style.display = "none";
   document.querySelector("#compose-view").style.display = "none";
@@ -144,7 +144,7 @@ function load_email(email_id) {
   // Fetch email content
   fetch(`/emails/${email_id}`)
     .then((response) => response.json())
-    .then((email) => display_email(email))
+    .then((email) => display_email(email, mailbox))
     .catch((error) => console.error("Error loading email:", error));
 
   // Mark the email as read
@@ -189,6 +189,7 @@ function display_email(email, mailbox) {
   if (mailbox === "inbox" || mailbox === "archive") {
     const archiveButton = document.createElement("button");
     archiveButton.textContent = mailbox === "inbox" ? "Archive" : "Unarchive";
+    archiveButton.className = "btn btn-primary"; // Add class for styling
     archiveButton.addEventListener("click", () =>
       toggle_archive(email.id, mailbox !== "inbox")
     );
@@ -234,7 +235,12 @@ function toggle_archive(email_id, archiveStatus) {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      load_mailbox("inbox");
+      // Reload the appropriate mailbox after updating the archive status
+      if (archiveStatus) {
+        load_mailbox("inbox"); // If archiving, reload inbox
+      } else {
+        load_mailbox("archive"); // If unarchiving, reload archive
+      }
     })
     .catch((error) => console.error("Error updating archive status:", error));
 }
