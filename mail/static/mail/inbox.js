@@ -67,8 +67,8 @@ function send_email(event) {
   const subject = document.querySelector("#compose-subject").value;
   const body = document.querySelector("#compose-body").value;
 
-  if (!recipients || !validateEmail(recipients)) {
-    alert("Please enter a valid recipient email.");
+  if (!recipients || !validateEmails(recipients)) {
+    alert("Please enter valid recipient emails.");
     return;
   }
 
@@ -97,9 +97,9 @@ function send_email(event) {
     });
 }
 
-function validateEmail(email) {
+function validateEmails(emails) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  return regex.test(email);
+  return emails.split(",").every((email) => regex.test(email.trim()));
 }
 
 function display_emails(emails, mailbox) {
@@ -123,8 +123,6 @@ function display_emails(emails, mailbox) {
     emailContainer.appendChild(emailDiv);
   });
 }
-
-// ... [Rest of the code remains largely unchanged] ...
 
 function load_email(email_id) {
   // Hide other views
@@ -180,19 +178,10 @@ function display_email(email, mailbox) {
 
   // Only show the Archive/Unarchive button for emails in the 'inbox' and 'archive' mailboxes
   if (mailbox === "inbox" || mailbox === "archive") {
-    const archiveButton = document.createElement("button");
-    if (email.archived) {
-      archiveButton.textContent = "Unarchive";
-      archiveButton.addEventListener("click", () =>
-        toggle_archive(email.id, false)
-      );
-    } else {
-      archiveButton.textContent = "Archive";
-      archiveButton.addEventListener("click", () =>
-        toggle_archive(email.id, true)
-      );
-    }
-    emailView.appendChild(archiveButton);
+    const markUnreadButton = document.createElement("button");
+    markUnreadButton.textContent = "Mark as Unread";
+    markUnreadButton.addEventListener("click", () => mark_as_unread(email.id));
+    emailView.appendChild(markUnreadButton);
   }
 }
 
@@ -203,6 +192,21 @@ function mark_as_read(email_id) {
       read: true,
     }),
   });
+}
+function mark_as_unread(email_id) {
+  fetch(`/emails/${email_id}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      read: false,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      load_mailbox("inbox");
+    })
+    .catch((error) => console.error("Error updating read status:", error));
 }
 
 function toggle_archive(email_id, archiveStatus) {
