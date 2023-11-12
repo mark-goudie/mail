@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize views
   initViews();
 
-  // Event listeners for the main menu buttons
+  // Use buttons to toggle between views
   document
     .querySelector("#inbox")
     .addEventListener("click", () => load_mailbox("inbox"));
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelector("#compose-form")
     .addEventListener("submit", send_email);
 
-  // Load the inbox by default
+  // By default, load the inbox
   load_mailbox("inbox");
 });
 
@@ -93,8 +93,7 @@ function send_email(event) {
     .then((result) => {
       console.log("Email sent successfully:", result);
       load_mailbox("sent");
-    })
-    .catch((error) => console.error("Error sending email:", error));
+    });
 }
 
 function validateEmails(emails) {
@@ -106,11 +105,9 @@ function display_emails(emails, mailbox) {
   const emailContainer = document.querySelector("#emails-view");
 
   emails.forEach((email) => {
-    // Create a row for each email
     const emailRow = document.createElement("div");
     emailRow.className = "row email mb-2 border-bottom";
 
-    // Create columns for sender, subject, and date
     const senderCol = document.createElement("div");
     senderCol.className = "col-md-4 col-sm-12";
     senderCol.textContent = email.sender;
@@ -123,15 +120,12 @@ function display_emails(emails, mailbox) {
     dateCol.className = "col-md-4 col-sm-12 text-right";
     dateCol.textContent = email.timestamp;
 
-    // Append columns to the row
     emailRow.appendChild(senderCol);
     emailRow.appendChild(subjectCol);
     emailRow.appendChild(dateCol);
 
-    // Add event listener for row click
     emailRow.addEventListener("click", () => load_email(email.id, mailbox));
 
-    // Append the row to the container
     emailContainer.appendChild(emailRow);
   });
 }
@@ -143,7 +137,7 @@ function load_email(email_id, mailbox) {
 
   const emailView = document.querySelector("#email-view");
   emailView.style.display = "block";
-  emailView.innerHTML = ""; // Clear previous content
+  emailView.innerHTML = "";
 
   // Fetch email content
   fetch(`/emails/${email_id}`)
@@ -173,23 +167,22 @@ function display_email(email, mailbox) {
   subjectDiv.innerHTML = `<b>Subject:</b> ${email.subject}`;
   emailView.appendChild(subjectDiv);
 
-  // Timestamp information
+  // Timestamp informaton
   const timestampDiv = document.createElement("div");
   timestampDiv.innerHTML = `<b>Timestamp:</b> ${email.timestamp}`;
   emailView.appendChild(timestampDiv);
 
-  // Body of the email
+  // Email body
   const bodyDiv = document.createElement("div");
   bodyDiv.innerHTML = `<p>${email.body}</p>`;
   emailView.appendChild(bodyDiv);
 
   const replyButton = document.createElement("button");
   replyButton.textContent = "Reply";
-  replyButton.className = "btn btn-primary"; // Add class for styling
+  replyButton.className = "btn btn-primary";
   replyButton.addEventListener("click", () => reply_email(email));
   emailView.appendChild(replyButton);
 
-  // Only show the Archive/Unarchive button for emails in the 'inbox' and 'archive' mailboxes
   if (mailbox === "inbox" || mailbox === "archive") {
     const archiveButton = document.createElement("button");
     archiveButton.textContent = email.archived ? "Unarchive" : "Archive";
@@ -235,7 +228,7 @@ function toggle_archive(email_id, archiveStatus) {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      // Reload the appropriate mailbox after updating the archive status
+
       load_mailbox(archiveStatus ? "inbox" : "archive");
     })
     .catch((error) => {
@@ -245,10 +238,8 @@ function toggle_archive(email_id, archiveStatus) {
 }
 
 function reply_email(email) {
-  // Activate the composition view
   compose_email();
 
-  // Pre-fill the composition form
   document.querySelector("#compose-recipients").value = email.sender;
 
   // Check for 'Re:' prefix in the subject
