@@ -95,7 +95,7 @@ input[type="submit"] {
 }
 
 .email > div {
-  padding: 5px; /* Adjust padding as needed */
+  padding: 5px;
 }
 
 .email:hover {
