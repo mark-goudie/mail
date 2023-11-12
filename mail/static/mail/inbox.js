@@ -108,6 +108,10 @@ function display_emails(emails, mailbox) {
     const emailRow = document.createElement("div");
     emailRow.className = "row email mb-2 border-bottom";
 
+    if (email.read) {
+      emailRow.style.backgroundColor = "#f0f0f0"; // Grey background for read emails
+    }
+
     const senderCol = document.createElement("div");
     senderCol.className = "col-md-4 col-sm-12";
     senderCol.textContent = email.sender;
